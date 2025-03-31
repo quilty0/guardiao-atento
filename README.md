@@ -24,6 +24,20 @@ Acesse a demonstração online: [https://guardiao-atento.vercel.app](https://gua
   - Notificações instantâneas
   - Status do paciente (Vivo, Alerta, Emergência)
 
+- **Sistema de Comunicação**
+  - Videochamadas com o idoso
+  - Chamadas via WhatsApp
+  - Ligações telefônicas convencionais
+  - Interface intuitiva para contatos
+
+- **Notificações Inteligentes**
+  - Alertas de quedas (alta prioridade)
+  - Monitoramento de sinais vitais
+  - Alertas de localização
+  - Lembretes de medicação
+  - Notificações personalizadas por severidade
+  - Sistema de leitura e acompanhamento
+
 ## 🛠️ Tecnologias Utilizadas
 
 - React.js
@@ -31,6 +45,8 @@ Acesse a demonstração online: [https://guardiao-atento.vercel.app](https://gua
 - Material-UI
 - Context API para gerenciamento de estado
 - Sistema de notificações em tempo real
+- WebRTC para videochamadas
+- Integração com WhatsApp e telefonia
 
 ## 🔧 Instalação e Uso
 
@@ -57,6 +73,9 @@ O projeto estará disponível em `http://localhost:3000`
 - Interface adaptável para diferentes dispositivos
 - Design moderno e intuitivo
 - Fácil visualização de informações críticas
+- Otimizado para uso em smartphones
+- Notificações e alertas responsivos
+- Controles adaptados para toque
 
 ## 👥 Desenvolvido por
 
