@@ -7,6 +7,7 @@ import LocationMap from './components/LocationMap/LocationMap';
 import SOSButton from './components/SOSButton/SOSButton';
 import HealthCards from './components/HealthCards/HealthCards';
 import BehaviorAnalysis from './components/BehaviorAnalysis';
+import CommunicationPanel from './components/Communication/CommunicationPanel';
 import { getCurrentPatterns, detectAnomalies, predictRisks } from './services/behaviorAnalysis';
 
 interface TabPanelProps {
@@ -67,6 +68,7 @@ const App: React.FC = () => {
           <Tabs value={tabValue} onChange={handleTabChange} centered>
             <Tab label="Principal" />
             <Tab label="Análise de Comportamento" />
+            <Tab label="Comunicação" />
           </Tabs>
 
           <TabPanel value={tabValue} index={0}>
@@ -97,6 +99,10 @@ const App: React.FC = () => {
               patterns={patterns}
               anomalies={anomalies}
             />
+          </TabPanel>
+
+          <TabPanel value={tabValue} index={2}>
+            <CommunicationPanel />
           </TabPanel>
         </Box>
       </Box>
