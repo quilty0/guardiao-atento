@@ -11,31 +11,58 @@ interface LocationMapProps {
 const LocationMap: React.FC<LocationMapProps> = ({ location, lastUpdate }) => {
   const [position, setPosition] = useState({ x: 50, y: 50 });
   const [isInsideArea, setIsInsideArea] = useState(true);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Função para simular o movimento para fora da área
+  const simulateMovementOutside = () => {
+    setIsAnimating(true);
+    
+    // Move para fora rapidamente
+    setTimeout(() => {
+      setPosition({ x: 85, y: 85 }); // Move para longe do centro
+      setIsInsideArea(false);
+    }, 500);
+
+    // Volta para dentro após 3 segundos
+    setTimeout(() => {
+      setPosition({ x: 50, y: 50 }); // Volta ao centro
+      setIsInsideArea(true);
+      setIsAnimating(false);
+    }, 3000);
+  };
 
   useEffect(() => {
+    // Inicia a simulação a cada 15 segundos se não estiver animando
     const interval = setInterval(() => {
-      setPosition(prev => {
-        const newX = prev.x + (Math.random() * 2 - 1);
-        const newY = prev.y + (Math.random() * 2 - 1);
-        
-        // Calcula a distância do centro (50%, 50%)
-        const dx = newX - 50;
-        const dy = newY - 50;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        
-        // Verifica se está dentro da área segura (30% do raio)
-        setIsInsideArea(distance <= 30);
-
-        // Mantém o pin dentro dos limites do mapa
-        return {
-          x: Math.max(0, Math.min(100, newX)),
-          y: Math.max(0, Math.min(100, newY))
-        };
-      });
-    }, 1000);
+      if (!isAnimating) {
+        simulateMovementOutside();
+      }
+    }, 15000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isAnimating]);
+
+  // Movimento suave quando dentro da área
+  useEffect(() => {
+    let movementInterval: NodeJS.Timeout;
+
+    if (!isAnimating && isInsideArea) {
+      movementInterval = setInterval(() => {
+        setPosition(prev => {
+          const newX = prev.x + (Math.random() * 0.5 - 0.25);
+          const newY = prev.y + (Math.random() * 0.5 - 0.25);
+          
+          // Mantém próximo ao centro
+          return {
+            x: Math.max(45, Math.min(55, newX)),
+            y: Math.max(45, Math.min(55, newY))
+          };
+        });
+      }, 1000);
+    }
+
+    return () => clearInterval(movementInterval);
+  }, [isAnimating, isInsideArea]);
 
   return (
     <Paper elevation={0} sx={{ p: 3, borderRadius: 2 }}>
@@ -52,32 +79,33 @@ const LocationMap: React.FC<LocationMapProps> = ({ location, lastUpdate }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          mb: 2
+          mb: 2,
+          overflow: 'hidden'
         }}
       >
         {/* Círculo de geocerca */}
         <Box
           sx={{
             width: '60%',
-            height: '30%',
-            border: '1px solid #3498DB',
+            height: '60%',
+            border: '2px solid #3498DB',
             borderRadius: '50%',
             opacity: 0.5,
             position: 'absolute'
           }}
         />
         
-        {/* Marcador central */}
+        {/* Marcador do idoso */}
         <LocationOn
           sx={{
-            color: '#E74C3C',
+            color: isInsideArea ? '#2ECC71' : '#E74C3C',
             fontSize: 32,
             filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
             position: 'absolute',
             left: `${position.x}%`,
             top: `${position.y}%`,
             transform: 'translate(-50%, -50%)',
-            transition: 'all 1s ease-in-out'
+            transition: 'all 0.8s ease-in-out'
           }}
         />
       </Box>
@@ -89,8 +117,15 @@ const LocationMap: React.FC<LocationMapProps> = ({ location, lastUpdate }) => {
         <Typography variant="body2" color="text.secondary">
           Última atualização: {lastUpdate}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Status: {isInsideArea ? 'Dentro da área segura' : 'Fora da área segura'}
+        <Typography 
+          variant="body2" 
+          sx={{ 
+            color: isInsideArea ? 'success.main' : 'error.main',
+            fontWeight: 'bold',
+            transition: 'color 0.3s ease'
+          }}
+        >
+          Status: {isInsideArea ? 'Dentro da área segura' : 'FORA DA ÁREA SEGURA!'}
         </Typography>
         <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic', display: 'block', mt: 1 }}>
           Mapa Estático - Geocerca: 1km de raio
