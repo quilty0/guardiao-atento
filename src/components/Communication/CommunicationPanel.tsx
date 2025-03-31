@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Paper, Typography, Divider } from '@mui/material';
+import { Box, Paper, Typography, Divider, useTheme, useMediaQuery } from '@mui/material';
 import VideoCall from './VideoCall';
 import AutoNotificationService, { AutoNotification } from '../../services/AutoNotificationService';
 import NotificationsList from '../Notifications/NotificationsList';
 
 const CommunicationPanel: React.FC = () => {
   const [notifications, setNotifications] = useState<AutoNotification[]>([]);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     const notificationService = AutoNotificationService.getInstance();
@@ -24,18 +26,13 @@ const CommunicationPanel: React.FC = () => {
 
     // Simula alguns eventos para teste
     const interval = setInterval(() => {
-      // Simula uma queda
       notificationService.checkForFalls({ x: 0, y: 25, z: 0 });
-
-      // Simula pressão alta
       notificationService.checkVitalSigns(110, { systolic: 145, diastolic: 95 });
-
-      // Simula saída da área segura
       notificationService.checkLocation(
         { lat: -23.5505, lng: -46.6333 },
-        { center: { lat: -23.5505, lng: -46.6333 }, radius: 100 } // Reduzido o raio para 100m para forçar alerta
+        { center: { lat: -23.5505, lng: -46.6333 }, radius: 100 }
       );
-    }, 5000); // Reduzido para 5 segundos para teste
+    }, 5000);
 
     return () => {
       unsubscribe();
@@ -52,19 +49,55 @@ const CommunicationPanel: React.FC = () => {
   };
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 2, p: 2 }}>
-      <Paper elevation={3} sx={{ p: 2, flex: 1 }}>
-        <Typography variant="h6" gutterBottom>
+    <Box sx={{ 
+      height: '100%', 
+      display: 'flex', 
+      flexDirection: 'column', 
+      gap: isMobile ? 1 : 2,
+      p: isMobile ? 1 : 2,
+      overflow: 'auto'
+    }}>
+      <Paper 
+        elevation={3} 
+        sx={{ 
+          p: isMobile ? 1 : 2,
+          flex: isMobile ? 'none' : 1,
+          minHeight: isMobile ? 'auto' : '200px'
+        }}
+      >
+        <Typography 
+          variant={isMobile ? "subtitle1" : "h6"} 
+          gutterBottom 
+          sx={{ 
+            fontSize: isMobile ? '1rem' : undefined,
+            mb: isMobile ? 1 : 2
+          }}
+        >
           Comunicação com Francisco (Avô)
         </Typography>
         <VideoCall />
       </Paper>
 
-      <Paper elevation={3} sx={{ p: 2, flex: 1 }}>
-        <Typography variant="h6" gutterBottom>
+      <Paper 
+        elevation={3} 
+        sx={{ 
+          p: isMobile ? 1 : 2,
+          flex: 1,
+          overflow: 'auto',
+          maxHeight: isMobile ? 'calc(100vh - 300px)' : undefined
+        }}
+      >
+        <Typography 
+          variant={isMobile ? "subtitle1" : "h6"} 
+          gutterBottom
+          sx={{ 
+            fontSize: isMobile ? '1rem' : undefined,
+            mb: isMobile ? 1 : 2
+          }}
+        >
           Alertas e Notificações
         </Typography>
-        <Divider sx={{ my: 1 }} />
+        <Divider sx={{ my: isMobile ? 0.5 : 1 }} />
         <NotificationsList 
           notifications={notifications}
           onNotificationRead={handleNotificationRead}

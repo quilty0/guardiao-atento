@@ -8,7 +8,9 @@ import {
   Avatar,
   Paper,
   Tooltip,
-  Chip
+  Chip,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import {
   Videocam,
@@ -19,7 +21,8 @@ import {
   CallEnd,
   Person,
   WhatsApp,
-  Phone
+  Phone,
+  LocalPhone
 } from '@mui/icons-material';
 import MessageService from '../../services/MessageService';
 
@@ -34,6 +37,9 @@ const VideoCall: React.FC = () => {
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
 
   const monitoredContact = MessageService.getInstance().getMonitoredContact();
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const startLocalVideo = async () => {
     try {
@@ -95,12 +101,10 @@ const VideoCall: React.FC = () => {
   };
 
   const handleWhatsAppCall = () => {
-    // Em um ambiente real, aqui abriria o WhatsApp com o número do contato
     window.open(`https://wa.me/${monitoredContact.phone.replace(/\D/g, '')}`, '_blank');
   };
 
   const handlePhoneCall = () => {
-    // Em um ambiente real, aqui iniciaria uma chamada telefônica
     window.location.href = `tel:${monitoredContact.phone.replace(/\D/g, '')}`;
   };
 
@@ -111,71 +115,84 @@ const VideoCall: React.FC = () => {
   }, []);
 
   return (
-    <Box>
-      <Paper 
-        elevation={3}
-        sx={{
-          p: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2
+    <Box sx={{ 
+      display: 'flex',
+      flexDirection: isMobile ? 'column' : 'row',
+      alignItems: 'center',
+      gap: isMobile ? 1 : 2,
+      p: isMobile ? 1 : 2
+    }}>
+      <Avatar 
+        sx={{ 
+          width: isMobile ? 60 : 80, 
+          height: isMobile ? 60 : 80 
         }}
       >
-        <Box sx={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between'
-        }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Avatar
-              sx={{ width: 64, height: 64 }}
-            >
-              <Person sx={{ fontSize: 40 }} />
-            </Avatar>
-            <Box>
-              <Typography variant="h6">{monitoredContact.name}</Typography>
-              <Chip 
-                label={monitoredContact.relationship}
-                size="small"
-                color="primary"
-                sx={{ mt: 0.5 }}
-              />
-            </Box>
-          </Box>
-          
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <Tooltip title="Chamada de WhatsApp">
-              <IconButton 
-                color="success" 
-                onClick={handleWhatsAppCall}
-              >
-                <WhatsApp />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Ligação telefônica">
-              <IconButton 
-                color="primary"
-                onClick={handlePhoneCall}
-              >
-                <Phone />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={isCallActive ? "Encerrar videochamada" : "Iniciar videochamada"}>
-              <IconButton
-                color={isCallActive ? 'error' : 'primary'}
-                onClick={isCallActive ? handleEndCall : handleStartCall}
-                disabled={isCallConnecting}
-              >
-                {isCallActive ? <CallEnd /> : <Call />}
-              </IconButton>
-            </Tooltip>
-          </Box>
-        </Box>
+        <Person sx={{ fontSize: 40 }} />
+      </Avatar>
+      
+      <Box sx={{ 
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: isMobile ? 'center' : 'flex-start',
+        gap: 0.5
+      }}>
+        <Typography 
+          variant={isMobile ? "body1" : "h6"}
+          sx={{ fontWeight: 'bold' }}
+        >
+          {monitoredContact.name}
+        </Typography>
+        
+        <Chip 
+          label={monitoredContact.relationship} 
+          color="primary" 
+          size={isMobile ? "small" : "medium"}
+          sx={{ mb: 1 }}
+        />
 
-        <Typography variant="body2" color="text.secondary">
+        <Typography 
+          variant={isMobile ? "body2" : "body1"}
+          color="text.secondary"
+        >
           {monitoredContact.phone}
         </Typography>
-      </Paper>
+      </Box>
+
+      <Box sx={{ 
+        display: 'flex',
+        gap: 1,
+        ml: isMobile ? 0 : 'auto'
+      }}>
+        <Tooltip title="Chamada de WhatsApp">
+          <IconButton 
+            color="primary" 
+            onClick={handleWhatsAppCall}
+            size={isMobile ? "small" : "medium"}
+          >
+            <WhatsApp />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Ligação telefônica">
+          <IconButton 
+            color="primary" 
+            onClick={handlePhoneCall}
+            size={isMobile ? "small" : "medium"}
+          >
+            <LocalPhone />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title={isCallActive ? "Encerrar videochamada" : "Iniciar videochamada"}>
+          <IconButton
+            color={isCallActive ? 'error' : 'primary'}
+            onClick={isCallActive ? handleEndCall : handleStartCall}
+            disabled={isCallConnecting}
+            size={isMobile ? "small" : "medium"}
+          >
+            {isCallActive ? <CallEnd /> : <Call />}
+          </IconButton>
+        </Tooltip>
+      </Box>
 
       <Dialog
         open={isCallActive || isCallConnecting}

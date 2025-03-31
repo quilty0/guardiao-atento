@@ -8,7 +8,9 @@ import {
   Box,
   Badge,
   Divider,
-  IconButton
+  IconButton,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import {
   Warning,
@@ -29,12 +31,15 @@ interface NotificationsListProps {
   onNotificationRead?: (id: string) => void;
 }
 
-const NotificationsList: React.FC<NotificationsListProps> = ({ 
-  notifications, 
+const NotificationsList: React.FC<NotificationsListProps> = ({
+  notifications,
   variant = 'panel',
   onClose,
-  onNotificationRead 
+  onNotificationRead
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const getIcon = (type: string, severity: string) => {
     if (type === 'medication') return <MedicalServices color="info" />;
     if (type === 'activity') return <DirectionsWalk color="success" />;
@@ -180,8 +185,10 @@ const NotificationsList: React.FC<NotificationsListProps> = ({
   return (
     <List sx={{ 
       overflow: 'auto',
+      p: 0,
       '& .MuiListItem-root': {
-        mb: 1,
+        mb: isMobile ? 0.5 : 1,
+        p: isMobile ? 1 : 2,
         bgcolor: 'background.paper',
         borderRadius: 1
       }
@@ -196,41 +203,62 @@ const NotificationsList: React.FC<NotificationsListProps> = ({
             cursor: 'pointer',
             '&:hover': {
               bgcolor: 'action.hover'
-            }
+            },
+            flexDirection: isMobile ? 'column' : 'row',
+            alignItems: isMobile ? 'flex-start' : 'center'
           }}
           onClick={() => handleNotificationClick(notification)}
         >
-          <ListItemIcon>
-            {getIcon(notification.type, notification.severity)}
-          </ListItemIcon>
-          <ListItemText
-            primary={
-              <Typography 
-                variant="subtitle1" 
-                sx={{ 
-                  fontWeight: notification.read ? 'normal' : 'bold',
-                  color: notification.severity === 'high' ? 'error.main' : 'text.primary'
-                }}
-              >
-                {notification.title}
-              </Typography>
-            }
-            secondary={
-              <>
-                <Typography variant="body2" component="span">
-                  {notification.message}
-                </Typography>
-                <Typography
-                  variant="caption"
-                  display="block"
-                  color="text.secondary"
-                  sx={{ mt: 0.5 }}
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            width: '100%',
+            mb: isMobile ? 1 : 0
+          }}>
+            <ListItemIcon sx={{ minWidth: isMobile ? 36 : 56 }}>
+              {getIcon(notification.type, notification.severity)}
+            </ListItemIcon>
+            <ListItemText
+              primary={
+                <Typography 
+                  variant={isMobile ? "body1" : "subtitle1"}
+                  sx={{ 
+                    fontWeight: notification.read ? 'normal' : 'bold',
+                    color: notification.severity === 'high' ? 'error.main' : 'text.primary',
+                    fontSize: isMobile ? '0.9rem' : undefined
+                  }}
                 >
-                  {formatTimeAgo(notification.timestamp)}
+                  {notification.title}
                 </Typography>
-              </>
-            }
-          />
+              }
+            />
+          </Box>
+          <Box sx={{ 
+            pl: isMobile ? 4.5 : 0,
+            width: '100%'
+          }}>
+            <Typography 
+              variant="body2" 
+              component="div"
+              sx={{ 
+                color: 'text.secondary',
+                fontSize: isMobile ? '0.8rem' : undefined,
+                mb: 0.5
+              }}
+            >
+              {notification.message}
+            </Typography>
+            <Typography
+              variant="caption"
+              display="block"
+              color="text.secondary"
+              sx={{ 
+                fontSize: isMobile ? '0.7rem' : undefined
+              }}
+            >
+              {formatTimeAgo(notification.timestamp)}
+            </Typography>
+          </Box>
         </ListItem>
       ))}
       {notifications.length === 0 && (
@@ -238,7 +266,7 @@ const NotificationsList: React.FC<NotificationsListProps> = ({
           <ListItemText
             primary={
               <Typography 
-                variant="body1" 
+                variant={isMobile ? "body2" : "body1"}
                 color="text.secondary"
                 align="center"
               >
