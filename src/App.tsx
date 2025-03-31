@@ -63,7 +63,10 @@ const App: React.FC = () => {
         display: 'flex',
         flexDirection: 'column'
       }}>
-        <Navbar />
+        <Navbar 
+          onNavigate={setTabValue}
+          currentTab={tabValue}
+        />
         <Box sx={{ flex: 1, p: 2 }}>
           <Tabs value={tabValue} onChange={handleTabChange} centered>
             <Tab label="Principal" />

@@ -23,12 +23,20 @@ import {
   Security as SecurityIcon,
   Help as HelpIcon,
   Close as CloseIcon,
-  Menu as MenuIcon
+  Menu as MenuIcon,
+  Home as HomeIcon,
+  Analytics as AnalyticsIcon,
+  Call as CallIcon
 } from '@mui/icons-material';
 import ElderlyIcon from '@mui/icons-material/Elderly';
 import UserProfile from '../UserProfile';
 import NotificationsList from '../Notifications/NotificationsList';
 import AutoNotificationService, { AutoNotification } from '../../services/AutoNotificationService';
+
+interface NavbarProps {
+  onNavigate: (index: number) => void;
+  currentTab: number;
+}
 
 const mockUserProfile = {
   name: "Maria Silva",
@@ -38,21 +46,20 @@ const mockUserProfile = {
   photoUrl: "https://i.pravatar.cc/300"
 };
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentTab }) => {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [notifications, setNotifications] = useState<AutoNotification[]>([]);
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [showProfile, setShowProfile] = useState(false);
+  const [notifications, setNotifications] = useState<AutoNotification[]>([]);
 
   useEffect(() => {
     const notificationService = AutoNotificationService.getInstance();
     
-    // Inscreve para receber notificações
     const unsubscribe = notificationService.subscribe((notification) => {
       setNotifications(prev => [notification, ...prev]);
     });
 
-    // Simula algumas notificações iniciais
     notificationService.addStatusNotification('Francisco está com todos os sinais vitais normais');
     notificationService.addMedicationReminder('pressão');
     notificationService.addActivityNotification('Francisco completou sua caminhada diária');
@@ -68,6 +75,19 @@ const Navbar: React.FC = () => {
 
   const handleSettingsClose = () => {
     setSettingsAnchorEl(null);
+  };
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+
+  const handleNavigate = (index: number) => {
+    onNavigate(index);
+    handleMenuClose();
   };
 
   const handleProfileClick = () => {
@@ -101,21 +121,24 @@ const Navbar: React.FC = () => {
         boxShadow: 'none'
       }}>
         <Toolbar>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexGrow: 1 }}>
-            <ElderlyIcon sx={{ fontSize: 32 }} />
-            <Typography variant="h6" component="div">
-              Guardião Atento
-            </Typography>
-          </Box>
           <IconButton
             size="large"
             edge="start"
             color="inherit"
             aria-label="menu"
+            onClick={handleMenuClick}
             sx={{ mr: 2 }}
           >
             <MenuIcon />
           </IconButton>
+          
+          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+            <ElderlyIcon sx={{ fontSize: 32, mr: 1 }} />
+            <Typography variant="h6" component="div">
+              Guardião Atento
+            </Typography>
+          </Box>
+
           <IconButton
             color="inherit"
             onClick={() => setIsNotificationsOpen(true)}
@@ -133,6 +156,32 @@ const Navbar: React.FC = () => {
         </Toolbar>
       </AppBar>
 
+      <Menu
+        anchorEl={menuAnchorEl}
+        open={Boolean(menuAnchorEl)}
+        onClose={handleMenuClose}
+        sx={{ mt: 2 }}
+      >
+        <MenuItem onClick={() => handleNavigate(0)} selected={currentTab === 0}>
+          <ListItemIcon>
+            <HomeIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary="Principal" />
+        </MenuItem>
+        <MenuItem onClick={() => handleNavigate(1)} selected={currentTab === 1}>
+          <ListItemIcon>
+            <AnalyticsIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary="Análise de Comportamento" />
+        </MenuItem>
+        <MenuItem onClick={() => handleNavigate(2)} selected={currentTab === 2}>
+          <ListItemIcon>
+            <CallIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary="Comunicação" />
+        </MenuItem>
+      </Menu>
+
       <Drawer
         anchor="right"
         open={isNotificationsOpen}
@@ -149,7 +198,6 @@ const Navbar: React.FC = () => {
         />
       </Drawer>
 
-      {/* Menu de Configurações */}
       <Menu
         anchorEl={settingsAnchorEl}
         open={Boolean(settingsAnchorEl)}
@@ -182,7 +230,6 @@ const Navbar: React.FC = () => {
         </MenuItem>
       </Menu>
 
-      {/* Diálogo de Perfil */}
       <Dialog
         open={showProfile}
         onClose={handleProfileClose}
