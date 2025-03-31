@@ -1,104 +1,67 @@
 # Guardião Atento
 
-O Guardião Atento é um sistema de monitoramento para idosos que permite o acompanhamento em tempo real de sinais vitais, localização e status geral do paciente. O sistema foi desenvolvido com foco na usabilidade e acessibilidade, oferecendo uma interface intuitiva para cuidadores e familiares.
+Sistema de monitoramento em tempo real para pacientes idosos, desenvolvido com React e Material-UI.
 
-## Funcionalidades
+## 🚀 Demo Online
 
-- **Monitoramento de Sinais Vitais**: Acompanhamento em tempo real de:
-  - Frequência cardíaca
+Acesse a demonstração online: [https://guardiao-atento.vercel.app](https://guardiao-atento.vercel.app)
+
+## 📋 Funcionalidades
+
+- **Monitoramento em Tempo Real**
+  - Batimentos cardíacos
   - Pressão arterial
   - Temperatura corporal
-  - Saturação de oxigênio
+  - Nível de oxigênio
 
-- **Rastreamento de Localização**: 
-  - Visualização da localização atual
-  - Sistema de geocerca
-  - Alertas de saída da área segura
+- **Localização do Paciente**
+  - Rastreamento em tempo real
+  - Histórico de localização
+  - Alertas de área segura
 
-- **Sistema de Notificações**:
-  - Alertas de sinais vitais anormais
-  - Lembretes de medicação
-  - Notificações de atividades
+- **Sistema de Emergência**
+  - Botão SOS de fácil acesso
+  - Notificações instantâneas
+  - Status do paciente (Vivo, Alerta, Emergência)
 
-- **Botão de Emergência**:
-  - Acionamento rápido de socorro
-  - Confirmação para evitar falsos alarmes
+## 🛠️ Tecnologias Utilizadas
 
-- **Interface Responsiva**:
-  - Adaptação para diferentes tamanhos de tela
-  - Design moderno e intuitivo
-  - Alta acessibilidade
-
-## Tecnologias Utilizadas
-
-- React 18
+- React.js
 - TypeScript
-- Material-UI v5
-- Emotion (Styled Components)
+- Material-UI
+- Context API para gerenciamento de estado
+- Sistema de notificações em tempo real
 
-## Pré-requisitos
-
-- Node.js (versão 14 ou superior)
-- npm ou yarn
-
-## Instalação
+## 🔧 Instalação e Uso
 
 1. Clone o repositório:
 ```bash
-git clone https://github.com/seu-usuario/guardiao-atento.git
+git clone https://github.com/quilty0/guardiao-atento.git
 ```
 
-2. Entre no diretório do projeto:
+2. Instale as dependências:
 ```bash
 cd guardiao-atento
-```
-
-3. Instale as dependências:
-```bash
 npm install
 ```
 
-4. Configure as variáveis de ambiente:
-```bash
-cp .env.example .env
-```
-
-5. Inicie o servidor de desenvolvimento:
+3. Execute o projeto:
 ```bash
 npm start
 ```
 
-## Estrutura do Projeto
+O projeto estará disponível em `http://localhost:3000`
 
-```
-src/
-  ├── components/         # Componentes React
-  │   ├── Header/        # Cabeçalho com notificações
-  │   ├── HealthCards/   # Cards de sinais vitais
-  │   ├── LocationMap/   # Mapa de localização
-  │   ├── PatientStatus/ # Status do paciente
-  │   └── SOSButton/     # Botão de emergência
-  ├── styles/            # Estilos globais e tema
-  │   ├── global.css     # Estilos globais
-  │   └── theme.ts       # Configuração do tema
-  └── types.ts           # Tipos TypeScript
-```
+## 📱 Layout Responsivo
 
-## Contribuição
+- Interface adaptável para diferentes dispositivos
+- Design moderno e intuitivo
+- Fácil visualização de informações críticas
 
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
-3. Faça commit das suas alterações (`git commit -m 'Adiciona nova feature'`)
-4. Faça push para a branch (`git push origin feature/nova-feature`)
-5. Abra um Pull Request
+## 👥 Desenvolvido por
 
-## Licença
+- Manuel Ferreira (@quilty0)
+
+## 📄 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
-## Contato
-
-- Autor: Seu Nome
-- Twitter: [@seutwitter](https://twitter.com/seutwitter)
-- Email: seu.email@exemplo.com
-- Link do projeto: [https://github.com/seu-usuario/guardiao-atento](https://github.com/seu-usuario/guardiao-atento)
